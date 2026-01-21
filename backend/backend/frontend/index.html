@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrisisSense Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .chat-container {
+      width: 100%;
+      max-width: 400px;
+      background: #020617;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #000;
+    }
+    .chat-container h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #facc15;
+    }
+    .messages {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: #111827;
+    }
+    .user {
+      color: #38bdf8;
+      margin: 5px 0;
+    }
+    .bot {
+      color: #4ade80;
+      margin: 5px 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    input {
+      background: #1f2937;
+      color: white;
+    }
+    button {
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>🚨 CrisisSense Chatbot</h2>
+    <div class="messages" id="chat"></div>
+    <input type="text" id="msg" placeholder="Ask emergency question..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const msgInput = document.getElementById('msg');
+      const chatBox = document.getElementById('chat');
+      const message = msgInput.value.trim();
+      if (!message) return;
+
+      // Show user message
+      chatBox.innerHTML += `<p class="user">You: ${message}</p>`;
+
+      // Clear input
+      msgInput.value = '';
+
+      try {
+        const response = await fetch('YOUR_BACKEND_URL/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        chatBox.innerHTML += `<p class="bot">Bot: ${data.reply}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom
+      } catch (error) {
+        chatBox.innerHTML += `<p class="bot">Bot: ❌ Cannot reach server.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
